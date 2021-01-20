@@ -1,14 +1,33 @@
 #! /bin/bash
 declare -A coinflip
-coinflip=(["Head"]=0 ["Tail"]=0)
+coinflip=(["HH"]=0 ["HT"]=0 ["TH"]=0 ["TT"]=0)
 for (( i=0; i<100; i++ ))
 do
-	if [ $(( RANDOM%2 )) -eq 0 ]
+	res1=$(( RANDOM%2 )) 
+	res2=$(( RANDOM%2 ))
+	result=$(( res1+res2 ))
+	if [ $result -eq 0 ]
 	then
-        	    coinflip["Head"]=$(( ${coinflip[Head]}+1 ))
+		ch=0
+	elif [ $result -eq 2 ]
+	then 
+		ch=3
 	else
-        	    coinflip["Tail"]=$(( ${coinflip[Tail]}+1 ))
+		if [ $res1 -eq 0 ]
+		then
+			ch=1
+		else
+			ch=2
+		fi
 	fi
+	case $ch in
+        	  0)coinflip["HH"]=$(( ${coinflip[HH]}+1 ));;
+        	  1)coinflip["HT"]=$(( ${coinflip[HT]}+1 ));;
+		  2)coinflip["TH"]=$(( ${coinflip[TH]}+1 ));;
+		  3)coinflip["TT"]=$(( ${coinflip[TT]}+1 ));;
+	esac
 done
-echo "Percent of Head : "${coinflip[Head]}
-echo "Percent of Tail : "${coinflip[Tail]}
+for key in ${!coinflip[@]}
+do
+	echo "Percent of " $key " : "${coinflip[$key]}
+done
